@@ -103,7 +103,7 @@ def hello_world():
 
 @app.route('/home')
 def home():
-    return 'home page'
+    return 'Powered by BNB Developers'
 
 
 from datetime import datetime
