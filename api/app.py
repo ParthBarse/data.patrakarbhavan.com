@@ -1,3 +1,5 @@
+from email.mime.application import MIMEApplication
+import pytz
 from datetime import datetime, timedelta
 import razorpay
 from flask import request, jsonify
@@ -106,18 +108,15 @@ def home():
     return 'Home Page - BnB Developers'
 
 
-from datetime import datetime
-import pytz
-
 def create_logs(msg):
     ist = pytz.timezone('Asia/Kolkata')  # Set timezone to IST
-    current_time = datetime.now(ist).strftime("%d/%m/%Y - %H:%M")  # Get current IST time
-    
+    current_time = datetime.now(ist).strftime(
+        "%d/%m/%Y - %H:%M")  # Get current IST time
+
     logs_collection.insert_one({
         "msg": msg,
         "timestamp": current_time
     })
-
 
 
 # def convert_to_pdf(docx_file, pdf_file):
@@ -272,13 +271,13 @@ def create_logs(msg):
 #         print(str(e))
 #         return 1
 
-# ^ 
+# ^
 def send_email_with_invoice(to_email, invoice_path, booking_data):
     """Sends an HTML email with the invoice attached"""
     sender_email = "no-reply@patrakarbhavan.com"
     sender_password = "no-reply@patrakarbhavan"
     subject = "Booking Confirmation - Patrakar Bhavan"
-    
+
     # HTML template (store in a separate file or variable)
     html_template = """
 <!DOCTYPE html>
@@ -409,32 +408,40 @@ def send_email_with_invoice(to_email, invoice_path, booking_data):
 </body>
 </html>
 """  # Insert the HTML template here
-    
+
     # Replace placeholders with actual booking data
     html_content = html_template.replace("{{name}}", booking_data["name"])
-    html_content = html_content.replace("{{order_id}}", booking_data["order_id"])
+    html_content = html_content.replace(
+        "{{order_id}}", booking_data["order_id"])
     html_content = html_content.replace("{{date}}", booking_data["date"])
-    html_content = html_content.replace("{{start_time}}", booking_data["start_time"])
-    html_content = html_content.replace("{{end_time}}", booking_data["end_time"])
-    html_content = html_content.replace("{{subCatType}}", booking_data["subCatType"])
-    html_content = html_content.replace("{{duration}}", booking_data["duration"])
-    html_content = html_content.replace("{{invoice_no}}", str(booking_data["invoice_no"]))
-    html_content = html_content.replace("{{amount_rupees}}", str(int(booking_data["amount"])/100))
-    
+    html_content = html_content.replace(
+        "{{start_time}}", booking_data["start_time"])
+    html_content = html_content.replace(
+        "{{end_time}}", booking_data["end_time"])
+    html_content = html_content.replace(
+        "{{subCatType}}", booking_data["subCatType"])
+    html_content = html_content.replace(
+        "{{duration}}", booking_data["duration"])
+    html_content = html_content.replace(
+        "{{invoice_no}}", str(booking_data["invoice_no"]))
+    html_content = html_content.replace(
+        "{{amount_rupees}}", str(int(booking_data["amount"])/100))
+
     msg = MIMEMultipart()
     msg["From"] = sender_email
     msg["To"] = to_email
     msg["Subject"] = subject
-    
+
     # Attach HTML content
     msg.attach(MIMEText(html_content, "html"))
-    
+
     # Attach the invoice PDF
     with open(invoice_path, "rb") as attachment:
-        part = MIMEApplication(attachment.read(), Name=os.path.basename(invoice_path))
+        part = MIMEApplication(
+            attachment.read(), Name=os.path.basename(invoice_path))
         part["Content-Disposition"] = f'attachment; filename="{os.path.basename(invoice_path)}"'
         msg.attach(part)
-    
+
     # Send the email
     with smtplib.SMTP("mail.patrakarbhavan.com", 587) as server:
         server.starttls()
@@ -595,6 +602,8 @@ def send_email_with_invoice(to_email, invoice_path, booking_data):
 # ^
 SECRET_KEY = "your_secret_key"
 # ^
+
+
 def create_jwt_token(uid):
     payload = {
         "uid": uid
@@ -602,6 +611,8 @@ def create_jwt_token(uid):
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
 # ^
+
+
 @app.route('/registerAdmin', methods=['POST'])
 def register_admin():
     try:
@@ -643,6 +654,8 @@ def register_admin():
         return jsonify({"error": str(e), "success": False}), 500
 
 # ^
+
+
 @app.route('/loginAdmin', methods=['POST'])
 def login_admin():
     try:
@@ -678,12 +691,15 @@ def login_admin():
     except Exception as e:
         return jsonify({"error": str(e), "success": False}), 500
 
+
 # ^
 db_member = client_monogo['patrakar_bhavan_db']
 members_collection = db_member['members_db']
 special_day_collection = db_member['special_day_collection']
 
 # ^
+
+
 @app.route('/addMember', methods=['POST'])
 def add_member():
     try:
@@ -704,6 +720,8 @@ def add_member():
         return jsonify({"error": str(e)}), 500
 
 # ^
+
+
 @app.route('/addSpecialDay', methods=['POST'])
 def add_special_day():
     try:
@@ -729,6 +747,8 @@ def add_special_day():
         return jsonify({"error": str(e)}), 500
 
 # ^
+
+
 @app.route('/filterSpecialDays', methods=['POST'])
 def filter_special_days():
     try:
@@ -745,6 +765,8 @@ def filter_special_days():
         return jsonify({"error": str(e)}), 500
 
 # ^
+
+
 def build_filter_query_special_days(params):
     filter_query = {}
 
@@ -762,6 +784,8 @@ def build_filter_query_special_days(params):
     return filter_query
 
 # ^
+
+
 @app.route('/deleteSpecialDay', methods=['DELETE'])
 def delete_special_day():
     try:
@@ -779,6 +803,7 @@ def delete_special_day():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 # ^
+
 
 @app.route('/deleteInquiry', methods=['DELETE'])
 def delete_inq():
@@ -798,6 +823,7 @@ def delete_inq():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 # ^
+
 
 @app.route('/updateMember', methods=['PUT'])
 def update_member():
@@ -824,6 +850,8 @@ def update_member():
         return jsonify({"error": str(e)}), 500
 
 # ^
+
+
 @app.route('/deleteMember', methods=['DELETE'])
 def delete_member():
     try:
@@ -842,6 +870,8 @@ def delete_member():
         return jsonify({"error": str(e)}), 500
 
 # ^
+
+
 @app.route('/filterMembers', methods=['POST'])
 def filter_members():
     try:
@@ -858,6 +888,8 @@ def filter_members():
         return jsonify({"error": str(e)}), 500
 
 # ^
+
+
 def build_filter_query_member(params):
     filter_query = {}
 
@@ -880,6 +912,7 @@ def build_filter_query_member(params):
 
     return filter_query
 # ^
+
 
 @app.route('/submitInquiry', methods=['POST'])
 def submitInquiry():
@@ -907,6 +940,7 @@ def submitInquiry():
         return jsonify({"error": str(e)}), 500
 # ^
 
+
 @app.route('/getAllInquiries', methods=['GET'])
 def get_all_inquiries():
     members_collection = db['inquiry_db']
@@ -920,6 +954,8 @@ def get_all_inquiries():
 #     logs = list(logs_collection.find({}, {"_id": 0}))
 #     return jsonify({"logs":logs[::-1], "c1":""})
 # ^
+
+
 @app.route('/getAllLogs', methods=['GET'])
 def get_all_logs():
     db = client_monogo["patrakar_bhavan_db"]
@@ -943,7 +979,7 @@ def get_all_logs():
     todays_booking = bookings.count_documents({"date": today_date})
 
     return jsonify({
-        "logs": logs[::-1], 
+        "logs": logs[::-1],
         "total_members": total_members,
         "total_inquiries": total_inquiries,
         "all_bookings": all_bookings,
@@ -951,6 +987,8 @@ def get_all_logs():
         "canceled_bookings": canceled_bookings
     })
 # ^
+
+
 @app.route('/filterAllInquiries', methods=['POST'])
 def filter_all_inquiries():
     try:
@@ -975,6 +1013,8 @@ def filter_all_inquiries():
         return jsonify({"error": str(e)}), 500  # Internal Server Error
 
 # ^
+
+
 def build_filter_query_inq(params):
     filter_query = {}
 
@@ -993,11 +1033,14 @@ def build_filter_query_inq(params):
 
     return filter_query
 
+
 # ^
 pch_bookings_db = client_monogo['hall_booking_conf']
 pch_bookings_collection = pch_bookings_db['bookings']
 
 # ^
+
+
 @app.route('/filterPCHBookings', methods=['POST'])
 def filter_pch_bookings():
     try:
@@ -1020,6 +1063,8 @@ def filter_pch_bookings():
         return jsonify({"error": str(e)}), 500  # Internal Server Error
 
 # ^
+
+
 def build_pch_filter_query(params):
     filter_query = {}
 
@@ -1044,10 +1089,14 @@ def build_pch_filter_query(params):
                     f".*{re.escape(value)}.*", re.IGNORECASE)
 
     return filter_query
+
+
 # ^
 pch_cancel_db = client_monogo['hall_booking_conf']
 canceled_bookings_collection = pch_cancel_db['canceledPaymentsPCH']
 # ^
+
+
 @app.route('/filterCancelBookings', methods=['POST'])
 def filter_cancel_bookings():
     try:
@@ -1070,6 +1119,7 @@ def filter_cancel_bookings():
     except Exception as e:
         return jsonify({"error": str(e)}), 500  # Internal Server Error
 
+
 # ^
 # Define hall timings
 HALL_OPEN = 11  # 11:00 AM
@@ -1091,6 +1141,7 @@ HALL_HOURS = {
 TIME_INTERVAL = 30  # Interval in minutes
 # ^
 
+
 def get_booked_slots_conf(date):
     """Fetch booked slots for a specific date."""
     bookings = bookings_conf_collection.find(
@@ -1098,6 +1149,8 @@ def get_booked_slots_conf(date):
     return [(entry["start_time"], entry["end_time"]) for entry in bookings]
 
 # ^
+
+
 def generate_available_slots_conf(date, duration, event_type):
     """Generate available slots based on date, duration, and type."""
     if event_type == "Press Conference":
@@ -1190,7 +1243,6 @@ def book_slot_conf():
             end_time_obj = datetime.strptime(end_time, "%H:%M")
         except ValueError:
             return jsonify({"error": "Invalid time format, use HH:MM"}), 400
-        
 
         if event_type == "Press Conference":
             event_type = "press-conf"
@@ -1255,7 +1307,8 @@ def getBookingDetails():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+
 @app.route("/getCanceledBookingDetails", methods=["GET"])
 def getCanceledBookingDetails():
     """API to get available slots for a given date, duration, and type."""
@@ -1273,19 +1326,19 @@ def getCanceledBookingDetails():
 def is_slot_available(date, start_time, end_time, payment_id=None):
     """Check if a time slot is available on a given date, ignoring the current booking."""
     booked_slots = bookings_conf_collection.find(
-        {"date": date, "payment_id": {"$ne": payment_id}},  # Ignore the current booking
+        # Ignore the current booking
+        {"date": date, "payment_id": {"$ne": payment_id}},
         {"_id": 0, "start_time": 1, "end_time": 1}
     )
 
     for booked in booked_slots:
         booked_start = booked["start_time"]
         booked_end = booked["end_time"]
-        
+
         if not (end_time <= booked_start or start_time >= booked_end):
             return False  # Overlapping slot found
 
     return True
-
 
 
 @app.route("/modify_booking_conf", methods=["POST"])
@@ -1350,7 +1403,6 @@ def modify_booking_conf():
             # Check if new slot is available
             if not is_slot_available(new_date, new_start_time, new_end_time, payment_id):
                 return jsonify({"error": "Selected slot is not available"}), 400
-
 
             # If available, update time-related fields
             update_data["date"] = new_date
@@ -1418,12 +1470,15 @@ def reschedule_booking():
             return jsonify({"error": "Booking not found"}), 404
 
         duration = int((end_dt - start_dt).total_seconds() / 60)
-        event_type = booking.get("subCatType")  # e.g. "press-conf" or "program"
+        # e.g. "press-conf" or "program"
+        event_type = booking.get("subCatType")
 
         # 5. Check if the requested slot is available
-        all_available = generate_available_slots_conf(date, duration, event_type)
+        all_available = generate_available_slots_conf(
+            date, duration, event_type)
 
-        is_valid = any(slot["start"] == start_time and slot["end"] == end_time for slot in all_available)
+        is_valid = any(slot["start"] == start_time and slot["end"]
+                       == end_time for slot in all_available)
         if not is_valid:
             return jsonify({"error": "Selected slot is no longer available"}), 409
 
@@ -1449,8 +1504,11 @@ def reschedule_booking():
 
 
 # Razorpay credentials
-RAZORPAY_KEY_ID = 'rzp_test_7DsJGQPeYoXK0N'
-RAZORPAY_KEY_SECRET = 'cmwhT5lOuC2zINSqg66xhwCR'
+# RAZORPAY_KEY_ID = 'rzp_test_7DsJGQPeYoXK0N'
+# RAZORPAY_KEY_SECRET = 'cmwhT5lOuC2zINSqg66xhwCR'
+
+RAZORPAY_KEY_ID = 'rzp_live_1pRyN7ScXA82sH'
+RAZORPAY_KEY_SECRET = 'HL5XNchqR0grnKwu89IdEF9a'
 
 # RAZORPAY_KEY_ID = 'rzp_live_K3QhOj3mTW1MqD'
 # RAZORPAY_KEY_SECRET = 'Ox4T869elURtieZlrVRy1TTN'
@@ -1506,11 +1564,11 @@ def create_order():
              "govId": govId,
              "subject": subject,
              "gstNo": gstNo,
-             "gst":gst,
-             "platformFee":platformFee,
-             "baseAmount":baseAmount,
-             "address":address,
-             "pinCode":pinCode
+             "gst": gst,
+             "platformFee": platformFee,
+             "baseAmount": baseAmount,
+             "address": address,
+             "pinCode": pinCode
              }]
     }
 
@@ -1553,11 +1611,13 @@ def get_payment_details(order_id):
 invoice_counter_collection = db3["invoice_counters"]
 bookings_conf_collection = db3["bookings"]
 
+
 class PDF(FPDF):
     def header(self):
         """ Set background image """
         self.image("template.jpeg", x=0, y=0, w=210, h=297)  # A4 size
         self.set_font("Arial", size=12)
+
 
 def get_next_invoice_number():
     """ Fetch and increment the last invoice number from invoice_counters collection. """
@@ -1567,11 +1627,12 @@ def get_next_invoice_number():
         upsert=True,
         return_document=True
     )
-    
+
     if counter_doc and "last_invoice" in counter_doc:
         return counter_doc["last_invoice"]
-    
+
     return 1000  # Default starting invoice number if collection was empty
+
 
 @app.route("/checkStatus/<order_id>")
 def checkStatus(order_id):
@@ -1612,15 +1673,17 @@ def checkStatus(order_id):
                 pinCode = notes.get("pinCode", "")
 
                 # data_bk1 = bookings_conf_collection.find_one({"invoice_no":int(invoice_no-1), "_id":-1})
-                data_bk2 = bookings_conf_collection.find_one({"payment_id":payment_id})
+                data_bk2 = bookings_conf_collection.find_one(
+                    {"payment_id": payment_id})
 
                 if data_bk2:
                     return jsonify({
-                    "status": True,
-                    "msg": "Already Payment successful! Slot booked successfully, and Invoice generated.",
-                })
+                        "status": True,
+                        "msg": "Already Payment successful! Slot booked successfully, and Invoice generated.",
+                    })
 
                 invoice_no = get_next_invoice_number()
+                invoice_no = str("OR-"+str(invoice_no))
 
                 invoice_link, invoice_path = generate_invoice({
                     "date": date,
@@ -1647,8 +1710,8 @@ def checkStatus(order_id):
                     "platformFee": platformFee,
                     "baseAmount": baseAmount,
                     "invoice_no": invoice_no,
-                    "address":address,
-                    "pinCode":pinCode
+                    "address": address,
+                    "pinCode": pinCode
                 })
 
                 bookings_conf_collection.insert_one({
@@ -1678,8 +1741,8 @@ def checkStatus(order_id):
                     "baseAmount": baseAmount,
                     "invoice_no": invoice_no,
                     "invoice_link": invoice_link,
-                    "address":address,
-                    "pinCode":pinCode
+                    "address": address,
+                    "pinCode": pinCode
                 })
 
                 send_email_with_invoice(email, invoice_path, {
@@ -1707,8 +1770,8 @@ def checkStatus(order_id):
                     "platformFee": platformFee,
                     "baseAmount": baseAmount,
                     "invoice_no": invoice_no,
-                    "address":address,
-                    "pinCode":pinCode
+                    "address": address,
+                    "pinCode": pinCode
                 })
 
                 return jsonify({
@@ -1728,8 +1791,6 @@ def checkStatus(order_id):
         return jsonify({"status": False, "msg": f"Something went wrong: {str(e)}"})
 
 
-
-
 def generate_invoice(receipt_data):
     """ Generates and saves an invoice as a PDF and returns the invoice link & file path """
     pdf = PDF()
@@ -1737,8 +1798,10 @@ def generate_invoice(receipt_data):
     pdf.set_font("Arial", size=10)
 
     # Convert values
-    receipt_data["words"] = num2words(receipt_data["amount"]/100, lang='en_IN').capitalize()
-    receipt_data["tcswords"] = num2words(receipt_data["gst"], lang='en_IN').capitalize()
+    receipt_data["words"] = num2words(
+        receipt_data["amount"]/100, lang='en_IN').capitalize()
+    receipt_data["tcswords"] = num2words(
+        receipt_data["gst"], lang='en_IN').capitalize()
     receipt_data['base'] = float(receipt_data['baseAmount'])
 
     # Invoice details
@@ -1752,7 +1815,6 @@ def generate_invoice(receipt_data):
     pdf.set_xy(141, 27)
     pdf.cell(0, 10, f"{current_date}", ln=True)
 
-
     # Customer details
     pdf.set_xy(14, 60)
     pdf.set_font("Arial", style="B", size=10)
@@ -1760,13 +1822,15 @@ def generate_invoice(receipt_data):
 
     pdf.set_xy(101, 93)
     pdf.set_font("Arial", size=10)
-    pdf.cell(0, 10, f"Booking Date: {receipt_data['date']}, Time: {receipt_data['start_time']} - {receipt_data['end_time']}", ln=True)
+    pdf.cell(
+        0, 10, f"Booking Date: {receipt_data['date']}, Time: {receipt_data['start_time']} - {receipt_data['end_time']}", ln=True)
 
     pdf.set_xy(14, 80)
     pdf.cell(0, 10, f"Phone: {receipt_data['phnNo']}", ln=True)
 
     pdf.set_xy(14, 69)
-    pdf.multi_cell(80,4, f"Address:{receipt_data['address']}, Pincode-{receipt_data['pinCode']}")
+    pdf.multi_cell(
+        80, 4, f"Address:{receipt_data['address']}, Pincode-{receipt_data['pinCode']}")
 
     pdf.set_xy(14, 90)
     pdf.cell(0, 10, f"Email: {receipt_data['email']}", ln=True)
@@ -1851,7 +1915,8 @@ def generate_invoice(receipt_data):
         pdf.set_xy(136, 128)
         pdf.cell(0, 10, f"18", ln=True)
         pdf.set_xy(170, 120)
-        pdf.cell(0, 10, f"{float(receipt_data['baseAmount']) - 254.24}", ln=True)
+        pdf.cell(
+            0, 10, f"{float(receipt_data['baseAmount']) - 254.24}", ln=True)
         pdf.set_xy(170, 144)
         pdf.cell(0, 10, f"{receipt_data['gst']/2}", ln=True)
         pdf.set_xy(170, 136)
@@ -1860,8 +1925,6 @@ def generate_invoice(receipt_data):
         pdf.cell(0, 10, f"{receipt_data['platformFee']}", ln=True)
         pdf.set_xy(170, 128)
         pdf.cell(0, 10, f"254.24", ln=True)
-
-
 
     # Save PDF
     # Generate PDF in memory
@@ -1873,21 +1936,23 @@ def generate_invoice(receipt_data):
     # Upload PDF to external server
     with open(pdf_path, "rb") as pdf_file:
         files = {"file": (pdf_filename, pdf_file, "application/pdf")}
-        response = requests.post("https://api2.patrakarbhavan.com/upload", files=files)
+        response = requests.post(
+            "https://api2.patrakarbhavan.com/upload", files=files)
 
     invoice_link = ""
-    
+
     # Check if the upload was successful
     if response.status_code == 200:
-        invoice_link = response.json().get("file_url")  # Assuming the API returns the file URL
+        # Assuming the API returns the file URL
+        invoice_link = response.json().get("file_url")
     else:
         print("Error uploading file")
 
     # invoice_link = f"https://files.patrakarbhavan.com/receipts/{current_date}/invoice_{receipt_data['invoice_no']}.pdf"
-    pdf_file_path = invoice_link.replace("https://files.patrakarbhavan.com","/home/rzeaiuym/files.patrakarbhavan.com")
+    pdf_file_path = invoice_link.replace(
+        "https://files.patrakarbhavan.com", "/home/rzeaiuym/files.patrakarbhavan.com")
     return invoice_link, pdf_path
 
-from email.mime.application import MIMEApplication
 
 # def send_email_with_invoice(to_email, invoice_path):
 #     """ Sends an email with the invoice attached """
@@ -1911,7 +1976,6 @@ from email.mime.application import MIMEApplication
 #         server.starttls()
 #         server.login(sender_email, sender_password)
 #         server.sendmail(sender_email, to_email, msg.as_string())
-
 canceled_collection = pch_bookings_db["canceledPaymentsPCH"]
 
 
