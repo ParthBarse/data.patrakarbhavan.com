@@ -1412,7 +1412,7 @@ def modify_booking_conf():
         # Update other fields directly if provided
         updatable_fields = [
             "name", "email", "contact", "phnNo", "amount", "insName", "subCatType",
-            "bookedBy", "gstNo", "govId", "subject", "address", "pinCode"
+            "bookedBy", "gstNo", "govId", "subject", "address", "pinCode", "remark"
         ]
         for field in updatable_fields:
             if field in data and data[field] != existing_booking.get(field):
