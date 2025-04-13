@@ -15,44 +15,19 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 import datetime
 from datetime import datetime
-# import random
-# import json
 from email.mime.text import MIMEText
 import smtplib
 import uuid
 import re
 import os
 import requests
-# from io import BytesIO
 import subprocess
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
-# import threading
-# import multiprocessing
-# import time
-# import zipfile
 import requests
 import base64
-# import threading
 from fpdf import FPDF
 from num2words import num2words
-
-# from docx import Document
-# from docx.shared import Pt
-# from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-# import subprocess
-
-# --------------------------------------------------------------------------------
-
-# file_dir = "/home/bnbdevelopers-files/htdocs/files.bnbdevelopers.in/exam_files/"
-# files_url = "https://files.bnbdevelopers.in"
-# files_base_dir = "/home/bnbdevelopers-files/htdocs/files.bnbdevelopers.in/"
-# files_base_url = "https://files.bnbdevelopers.in/exam_files/"
-
-# file_dir = "/home/mcfcamp-files/htdocs/files.mcfcamp.in/mcf_files/"
-# files_url = "https://files.mcfcamp.in"
-# files_base_dir = "/home/mcfcamp-files/htdocs/files.mcfcamp.in/"
-# files_base_url = "https://files.mcfcamp.in/mcf_files/"
 
 # ----------------------------------------------------------------------------------
 
@@ -64,38 +39,13 @@ client_monogo = MongoClient(
     'mongodb+srv://patrakarbhavan:patrakarbhavan123@patrakarbhavan.xpncdbt.mongodb.net/?retryWrites=true&w=majority')
 app.config['MONGO_URI'] = 'mongodb+srv://patrakarbhavan:patrakarbhavan123@patrakarbhavan.xpncdbt.mongodb.net/?retryWrites=true&w=majority'
 
-# client = MongoClient(
-#     'mongodb+srv://mcfcamp:mcf123@mcf.nyh46tl.mongodb.net/')
-# app.config['MONGO_URI'] = 'mongodb+srv://mcfcamp:mcf123@mcf.nyh46tl.mongodb.net/'
-
 app.config['SECRET_KEY'] = 'a6d217d048fdcd227661b755'
 db = client_monogo['patrakar_bhavan_db']
-# db2 = client['students_exam_answers']
-# bcrypt = Bcrypt(app)
-# login_manager = LoginManager(app)
-# app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-# app.config['MAIL_PORT'] = 465
-# app.config['MAIL_USE_SSL'] = True
-# app.config['MAIL_USERNAME'] = "ic2023wallet@gmail.com"
-# app.config['MAIL_PASSWORD'] = "irbnexpguzgxwdgx"
 
 pch_bookings_db = client_monogo['hall_booking_conf']
 pch_bookings_collection = pch_bookings_db['bookings']
 logs_collection = pch_bookings_db["logs"]
 host = ""
-
-
-# notificationFlag = True
-
-# def getNotfStat():
-#     settings_db = db['count_db']
-#     data = settings_db.find_one({"found":"2"})
-#     if data :
-#         notificationFlag=data['status']
-#     else:
-#         notificationFlag="on"
-#     print("Notification - ",notificationFlag)
-#     return notificationFlag
 
 
 @app.route('/')
@@ -118,167 +68,11 @@ def create_logs(msg):
         "timestamp": current_time
     })
 
-
-# def convert_to_pdf(docx_file, pdf_file):
-#     try:
-#         subprocess.run(['unoconv', '--output', pdf_file,
-#                        '--format', 'pdf', docx_file], check=True)
-#         print(f"Conversion successful: {docx_file} -> {pdf_file}")
-#     except subprocess.CalledProcessError as e:
-#         print(f"Error during conversion: {e}")
-
-
-# -----------------------------------------------------------------------------------------
-
-# ---------------------- System Synchronization Module ------------------------------------
-
-# file_directory = file_dir
-
-
-# def save_file(file, uid):
-#     try:
-#         # Get the file extension from the original filename
-#         original_filename = file.filename
-#         _, file_extension = os.path.splitext(original_filename)
-
-#         # Generate a unique filename using UUID and append the original file extension
-#         filename = str(uuid.uuid4()) + file_extension
-
-#         file_path = os.path.join(file_directory, uid, filename)
-#         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-#         file.save(file_path)
-
-#         return f'{files_base_url}{uid}/{filename}'
-#     except Exception as e:
-#         raise e
-
-
-# def save_file2(file_data, sid, filename):
-#     # Create a subdirectory for the specific session id if it doesn't exist
-#     session_path = os.path.join(file_directory, sid)
-#     if not os.path.exists(session_path):
-#         os.makedirs(session_path)
-
-#     # Save the file
-#     file_path = os.path.join(session_path, filename)
-#     with open(file_path, "wb") as f:
-#         f.write(file_data)
-
-#     # Return the URL to access the file (for simplicity, we return the file path here)
-#     return f'{files_base_url}{sid}/{filename}'
-
-# -------------- Supporting Functions Start ----------------
-
-
-# -------------- Supporting Functions End ----------------
-
-
-# ------------------------------------------------------------------------------------------
-
-# def encode_file_to_base64(file_path):
-#     try:
-#         with open(file_path, "rb") as file:
-#             filedata = file.read()
-#             filedata_encoded = base64.b64encode(filedata).decode('utf-8')
-#             return filedata_encoded
-#     except Exception as e:
-#         print(f"Error encoding file to Base64: {str(e)}")
-#         return None
-
-
-# def send_email(msg, sub, mailToSend):
-#     # notifyFlag = getNotfStat()
-#     # if notifyFlag == "off":
-#     #     mailToSend=''
-#     # mailToSend = "parthbarse72@gmail.com"
-#     try:
-#         # Send the password reset link via email
-#         # sender_email = "mcfcamp@gmail.com"
-#         # smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
-#         # smtp_server.ehlo()
-#         # smtp_server.starttls()
-#         # smtp_server.login("mcfcamp@gmail.com", "meyv ghup onbl fqhu")
-
-#         sender_email = "partbarse92@gmail.com"
-#         smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
-#         smtp_server.ehlo()
-#         smtp_server.starttls()
-#         smtp_server.login("partbarse92@gmail.com", "tdmz qbky qlzc urvg")
-
-#         message_text = msg
-#         message = MIMEText(message_text)
-#         message["Subject"] = sub
-#         message["From"] = sender_email
-#         message["To"] = mailToSend
-
-#         smtp_server.sendmail(sender_email, mailToSend, message.as_string())
-#         print(mailToSend)
-#         print("Send Mail")
-#         smtp_server.quit()
-#         return 0
-#     except Exception as e:
-#         print(str(e))
-#         return 1
-
-
-# def send_email_attachments(msg, sub, mailToSend, files=[]):
-#     # notifyFlag = getNotfStat()
-#     # if notifyFlag == "off":
-#     #     mailToSend=''
-#     # mailToSend = "parthbarse72@gmail.com"
-#     try:
-#         if len(files) > 1:
-#             files.append("THINGS_TO_BRING.pdf")
-#         sender_email = "no-reply@patrakarbhavan.com"
-#         smtp_server = smtplib.SMTP("mail.patrakarbhavan.com", 587)
-#         smtp_server.ehlo()
-#         smtp_server.starttls()
-#         smtp_server.login("no-reply@patrakarbhavan.com", "no-reply@patrakarbhavan")
-
-#         # Create a multipart message
-#         message = MIMEMultipart()
-#         message["Subject"] = sub
-#         message["From"] = sender_email
-#         message["To"] = mailToSend
-
-#         # Attach message body
-#         message.attach(MIMEText(msg, "plain"))
-
-#         # Attach files
-#         for file_path in files:
-#             with open(file_path, "rb") as attachment:
-#                 part = MIMEBase("application", "octet-stream")
-#                 part.set_payload(attachment.read())
-
-#             # Encode file in ASCII characters to send by email
-#             encoders.encode_base64(part)
-
-#             # Add header as key/value pair to attachment part
-#             part.add_header(
-#                 "Content-Disposition",
-#                 f"attachment; filename= {file_path}",
-#             )
-
-#             # Attach the attachment to the message
-#             message.attach(part)
-
-#         smtp_server.sendmail(sender_email, mailToSend, message.as_string())
-#         print(mailToSend)
-#         print("Send Mail")
-#         smtp_server.quit()
-#         return 0
-#     except Exception as e:
-#         print(str(e))
-#         return 1
-
-# ^
 def send_email_with_invoice(to_email, invoice_path, booking_data):
     """Sends an HTML email with the invoice attached"""
     sender_email = "no-reply@patrakarbhavan.com"
     sender_password = "no-reply@patrakarbhavan"
     subject = "Booking Confirmation - Patrakar Bhavan"
-
-    # HTML template (store in a separate file or variable)
     html_template = """
 <!DOCTYPE html>
 <html>
@@ -449,155 +243,6 @@ def send_email_with_invoice(to_email, invoice_path, booking_data):
         server.sendmail(sender_email, to_email, msg.as_string())
 
 # ------------------------------------------------------------------------------------------------------------
-
-
-# @app.route('/addExam', methods=['POST'])
-# def add_exam():
-#     try:
-#         data = request.form
-#         print("Data Recieved : ", data)
-#         print(data.get("exam_name"))
-
-#         # Generate a unique ID for the camp using UUID
-#         exam_id = str(uuid.uuid4().hex)
-
-#         exam = {
-#             "exam_id": exam_id,
-#             "exam_name": data["exam_name"].strip(),
-#             "exam_duration": data["exam_duration"],
-#             "exam_date": data["exam_date"],
-#             "exam_description": data["exam_description"],
-#             "exam_status": data["exam_status"],
-#         }
-
-#         # Store the camp information in the MongoDB collection
-#         exams_db = db["exams_db"]
-#         exams_db.insert_one(exam)
-
-#         return jsonify({"message": "Exam added successfully", "exam_id": exam_id})
-
-#     except ValueError as ve:
-#         return jsonify({"error": str(ve)}), 400  # Bad Request
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500  # Internal Server Error
-
-
-# @app.route('/updateExam', methods=['PUT'])
-# def update_exam():
-#     try:
-#         data = request.form
-
-#         # Check if exam_id is provided
-#         if 'exam_id' not in data:
-#             raise ValueError("Missing 'exam_id' in the request.")
-
-#         # Find the exam based on exam_id
-#         exams_db = db["exams_db"]
-#         exam = exams_db.find_one({"exam_id": data['exam_id']})
-
-#         if not exam:
-#             # Not Found
-#             return jsonify({"error": f"No exam found with exam_id: {data['exam_id']}"}), 404
-
-#         # Update the exam information with the received data
-#         for key, value in data.items():
-#             if key != 'exam_id':
-#                 # If the value is provided, update the field; otherwise, keep the existing value
-#                 if value:
-#                     exam[key] = value
-#                     if exam['exam_status'] == "on":
-#                         exam["exam_status"] = "Active"
-#                     else:
-#                         exam['exam_status'] = "Inactive"
-
-#         # Update the exam in the database
-#         exams_db.update_one({"exam_id": data['exam_id']}, {"$set": exam})
-
-#         return jsonify({"message": f"Exam with exam_id {data['exam_id']} updated successfully"})
-
-#     except ValueError as ve:
-#         return jsonify({"error": str(ve)}), 400  # Bad Request
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500  # Internal Server Error
-
-
-# @app.route('/getAllExams', methods=['GET'])
-# def get_all_exams():
-#     try:
-#         exams_db = db["exams_db"]
-#         # Exclude the _id field from the response
-#         exams = exams_db.find({}, {"_id": 0})
-
-#         # Convert the cursor to a list of dictionaries for easier serialization
-#         exam_list = list(exams)
-
-#         return jsonify({"exams": exam_list})
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500  # Internal Server Error
-
-
-# @app.route('/getAllExamsActive', methods=['GET'])
-# def get_all_exams_active():
-#     try:
-#         exams_db = db["exams_db"]
-#         # Exclude the _id field from the response
-#         exams = exams_db.find({"exam_status": "Active"}, {"_id": 0})
-
-#         # Convert the cursor to a list of dictionaries for easier serialization
-#         exam_list = list(exams)
-
-#         return jsonify({"exams": exam_list})
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500  # Internal Server Error
-
-
-# @app.route('/getAllBatches', methods=['GET'])
-# def get_all_batches():
-#     try:
-#         batches_db = db["batches_db"]
-#         # Exclude the _id field from the response
-#         batches = batches_db.find({}, {"_id": 0})
-
-#         # Convert the cursor to a list of dictionaries for easier serialization
-#         batches_list = list(batches)
-
-#         return jsonify({"camps": batches_list})
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500  # Internal Server Error
-
-
-# @app.route('/loginStudent', methods=['POST'])
-# def login_student():
-#     try:
-#         data = request.get_json()
-#         seid = data["username"]
-#         password = data["password"]
-
-#         exam_students_db = db["exam_students_db"]
-
-#         student = exam_students_db.find_one({"seid": seid})
-
-#         if (student):
-#             if (str(student['phn']) == str(password)):
-#                 return jsonify({"message": "Authenticated", "success": True, "token": seid, "seid": seid, "exam_id": student['exam_id']})
-#             else:
-#                 return jsonify({"message": "Not Authenticated", "success": False}), 401
-#         else:
-#             return jsonify({"message": "Student Not Found"}), 404
-
-#     except ValueError as ve:
-#         return jsonify({"error": str(ve)}), 400  # Bad Request
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500  # Internal Server Error
-
-
-# ------------------------------------------------------------------------------
 
 # ^
 SECRET_KEY = "your_secret_key"
@@ -1160,25 +805,63 @@ def generate_available_slots_conf(date, duration, event_type):
     if event_type not in HALL_HOURS:
         raise ValueError("Invalid event type")
 
-    booked_slots = get_booked_slots_conf(date)
+    # Set IST timezone
+    ist = pytz.timezone("Asia/Kolkata")
+    now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
+    now = now_utc.astimezone(ist)
+
+    # Parse the slot date as a date object
+    slot_date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+
+    # Booked slots → datetime objects (IST-aware)
+    booked_slots_raw = get_booked_slots_conf(date)
+    booked_slots = [
+        (
+            ist.localize(datetime.combine(slot_date_obj, datetime.strptime(start, "%H:%M").time())),
+            ist.localize(datetime.combine(slot_date_obj, datetime.strptime(end, "%H:%M").time()))
+        )
+        for start, end in booked_slots_raw
+    ]
+
     available_slots = []
-
     open_hour, close_hour = HALL_HOURS[event_type]
-    start_time = datetime.strptime(f"{open_hour}:00", "%H:%M")
-    end_time = datetime.strptime(f"{close_hour}:00", "%H:%M")
 
-    while start_time + timedelta(minutes=duration) <= end_time:
-        slot_start = start_time.strftime("%H:%M")
-        slot_end = (start_time + timedelta(minutes=duration)).strftime("%H:%M")
+    start_of_day = ist.localize(datetime.combine(slot_date_obj, datetime.min.time()))
+    min_start_time = start_of_day + timedelta(hours=open_hour)
+    max_end_time = start_of_day + timedelta(hours=close_hour)
 
-        # Check if slot overlaps with booked slots
-        if not any((slot_start < end and slot_end > start) for start, end in booked_slots):
-            available_slots.append({"start": slot_start, "end": slot_end})
+    # If selected date is today (in IST)
+    if slot_date_obj == now.date():
+        one_hour_later = now + timedelta(hours=1)
+        remainder = one_hour_later.minute % TIME_INTERVAL
+        if remainder != 0:
+            one_hour_later += timedelta(minutes=(TIME_INTERVAL - remainder))
+        one_hour_later = one_hour_later.replace(second=0, microsecond=0)
 
-        start_time += timedelta(minutes=TIME_INTERVAL)  # Move by 30 mins
+        if one_hour_later > min_start_time:
+            min_start_time = one_hour_later
+
+    current_time = min_start_time
+
+    while current_time + timedelta(minutes=duration) <= max_end_time:
+        slot_start = current_time
+        slot_end = current_time + timedelta(minutes=duration)
+
+        # Check for overlap
+        overlap = any(
+            slot_start < booked_end and slot_end > booked_start
+            for booked_start, booked_end in booked_slots
+        )
+
+        if not overlap:
+            available_slots.append({
+                "start": slot_start.strftime("%H:%M"),
+                "end": slot_end.strftime("%H:%M")
+            })
+
+        current_time += timedelta(minutes=TIME_INTERVAL)
 
     return available_slots
-
 
 @app.route("/available_slots_conf", methods=["GET"])
 def available_slots_conf():
@@ -1283,6 +966,14 @@ def book_slot_conf():
             data["subCatType"] = "Press Conference"
         else:
             data["subCatType"] = "Program"
+
+        ist = pytz.timezone("Asia/Kolkata")
+        now_ist = datetime.now(ist)
+
+        # Format: dd-mm-yyyy, hh:mm AM/PM
+        formatted_time = now_ist.strftime("%d-%m-%Y, %I:%M %p")
+        
+        data["timestamp"] = formatted_time
 
         # Store booking
         bookings_conf_collection.insert_one(data)
@@ -1615,7 +1306,7 @@ bookings_conf_collection = db3["bookings"]
 class PDF(FPDF):
     def header(self):
         """ Set background image """
-        self.image("template.jpeg", x=0, y=0, w=210, h=297)  # A4 size
+        self.image("template2.jpeg", x=0, y=0, w=210, h=297)  # A4 size
         self.set_font("Arial", size=12)
 
 
@@ -1714,6 +1405,13 @@ def checkStatus(order_id):
                     "pinCode": pinCode
                 })
 
+
+                ist = pytz.timezone("Asia/Kolkata")
+                now_ist = datetime.now(ist)
+
+                # Format: dd-mm-yyyy, hh:mm AM/PM
+                formatted_time = now_ist.strftime("%d-%m-%Y, %I:%M %p")
+
                 bookings_conf_collection.insert_one({
                     "date": date,
                     "start_time": start_time,
@@ -1742,7 +1440,8 @@ def checkStatus(order_id):
                     "invoice_no": invoice_no,
                     "invoice_link": invoice_link,
                     "address": address,
-                    "pinCode": pinCode
+                    "pinCode": pinCode,
+                    "timestamp" : formatted_time
                 })
 
                 send_email_with_invoice(email, invoice_path, {
@@ -1954,28 +1653,6 @@ def generate_invoice(receipt_data):
     return invoice_link, pdf_path
 
 
-# def send_email_with_invoice(to_email, invoice_path):
-#     """ Sends an email with the invoice attached """
-#     sender_email = "no-reply@patrakarbhavan.com"
-#     sender_password = "no-reply@patrakarbhavan"
-#     subject = "Successful Slot Booking and Payment Confirmation"
-#     body = "Your slot is booked successfully. Please find the attached invoice."
-
-#     msg = MIMEMultipart()
-#     msg["From"] = sender_email
-#     msg["To"] = to_email
-#     msg["Subject"] = subject
-#     msg.attach(MIMEText(body, "plain"))
-
-#     with open(invoice_path, "rb") as attachment:
-#         part = MIMEApplication(attachment.read(), Name=os.path.basename(invoice_path))
-#         part["Content-Disposition"] = f'attachment; filename="{os.path.basename(invoice_path)}"'
-#         msg.attach(part)
-
-#     with smtplib.SMTP("mail.patrakarbhavan.com", 587) as server:
-#         server.starttls()
-#         server.login(sender_email, sender_password)
-#         server.sendmail(sender_email, to_email, msg.as_string())
 canceled_collection = pch_bookings_db["canceledPaymentsPCH"]
 
 
@@ -2018,6 +1695,390 @@ def cancel_pch_booking():
         return jsonify({"success": False, "message": "Internal server error."}), 500
 
 # -------------------------------------------------------------------------------------------
+
+# Database reference
+db_chroma = client_monogo["hall_booking_chroma"]
+bookings_chroma_collection = db_chroma["bookings"]
+
+CHROMA_HOURS = (9, 20)  # 10 AM - 8 PM
+TIME_INTERVAL = 60  # Interval in minutes
+
+
+def get_booked_slots_chroma(date):
+    """Fetch booked Chroma Studio slots for a specific date."""
+    bookings = bookings_chroma_collection.find(
+        {"date": date}, {"_id": 0, "start_time": 1, "end_time": 1})
+    return [(entry["start_time"], entry["end_time"]) for entry in bookings]
+
+from datetime import datetime, timedelta
+import pytz
+
+def generate_available_slots_chroma(date, duration):
+    """Generate available Chroma Studio slots for a date and duration."""
+    ist = pytz.timezone("Asia/Kolkata")
+    now = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(ist)
+    slot_date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+
+    # Get existing bookings
+    booked_slots_raw = get_booked_slots_chroma(date)
+    booked_slots = [
+        (
+            ist.localize(datetime.combine(slot_date_obj, datetime.strptime(start, "%H:%M").time())),
+            ist.localize(datetime.combine(slot_date_obj, datetime.strptime(end, "%H:%M").time()))
+        )
+        for start, end in booked_slots_raw
+    ]
+
+    available_slots = []
+    open_hour, close_hour = CHROMA_HOURS
+
+    start_of_day = ist.localize(datetime.combine(slot_date_obj, datetime.min.time()))
+    min_start_time = start_of_day + timedelta(hours=open_hour)
+    max_end_time = start_of_day + timedelta(hours=close_hour)
+
+    if slot_date_obj == now.date():
+        one_hour_later = now + timedelta(hours=1)
+        remainder = one_hour_later.minute % TIME_INTERVAL
+        if remainder != 0:
+            one_hour_later += timedelta(minutes=(TIME_INTERVAL - remainder))
+        one_hour_later = one_hour_later.replace(second=0, microsecond=0)
+
+        if one_hour_later > min_start_time:
+            min_start_time = one_hour_later
+
+    current_time = min_start_time
+
+    while current_time + timedelta(minutes=duration) <= max_end_time:
+        slot_start = current_time
+        slot_end = current_time + timedelta(minutes=duration)
+
+        # Check overlap
+        overlap = any(
+            slot_start < booked_end and slot_end > booked_start
+            for booked_start, booked_end in booked_slots
+        )
+
+        if not overlap:
+            available_slots.append({
+                "start": slot_start.strftime("%H:%M"),
+                "end": slot_end.strftime("%H:%M")
+            })
+
+        current_time += timedelta(minutes=TIME_INTERVAL)
+
+    return available_slots
+
+
+@app.route("/available_slots_chroma", methods=["GET"])
+def available_slots_chroma():
+    """API to get available Chroma Studio slots for a given date and duration."""
+    try:
+        date_str = request.args.get("date")  # Expected: YYYY-MM-DD
+        duration = int(request.args.get("duration"))
+
+        try:
+            datetime.strptime(date_str, "%Y-%m-%d")
+        except ValueError:
+            return jsonify({"error": "Invalid date format, use YYYY-MM-DD"}), 400
+
+        if duration < 30 or duration > 660:
+            return jsonify({"error": "Duration must be between 30 and 660 minutes"}), 400
+
+        slots = generate_available_slots_chroma(date_str, duration)
+        return jsonify({"available_slots": slots})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def generate_invoice_chroma(receipt_data):
+    """ Generates and saves an invoice as a PDF and returns the invoice link & file path """
+    pdf = PDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=10)
+
+    # Convert values
+    receipt_data["words"] = num2words(receipt_data["amount"]/100, lang='en_IN').capitalize()
+    receipt_data["tcswords"] = num2words(receipt_data["gst"], lang='en_IN').capitalize()
+    receipt_data['base'] = float(receipt_data['baseAmount'])
+
+    # Invoice details
+    pdf.set_xy(101, 27)
+    pdf.cell(0, 10, f"{receipt_data['invoice_no']}", ln=True)
+    from datetime import datetime
+
+    # Get current date in desired format (e.g., 04-04-2025)
+    current_date = datetime.now().strftime("%d-%m-%Y")
+
+    pdf.set_xy(141, 27)
+    pdf.cell(0, 10, f"{current_date}", ln=True)
+
+
+    # Customer details
+    pdf.set_xy(14, 60)
+    pdf.set_font("Arial", style="B", size=10)
+    pdf.cell(0, 10, f"Name: {receipt_data['name']}", ln=True)
+
+    pdf.set_xy(101, 93)
+    pdf.set_font("Arial", size=10)
+    pdf.cell(0, 10, f"Time: {receipt_data['start_time']} - {receipt_data['end_time']}", ln=True)
+
+    pdf.set_xy(14, 83)
+    pdf.cell(0, 10, f"Phone: {receipt_data['phnNo']}", ln=True)
+
+    pdf.set_xy(14, 69)
+    pdf.multi_cell(80,4, f"Address: {receipt_data['address']} Pincode- {receipt_data['pinCode']}")
+
+    pdf.set_xy(14, 90)
+    pdf.cell(0, 10, f"Email: {receipt_data['email']}", ln=True)
+
+    # Amount details
+    pdf.set_xy(170, 163)
+    pdf.set_font("Arial", style="B", size=10)
+    pdf.cell(0, 10, f"{receipt_data['amount']/100}", ln=True)
+
+    pdf.set_xy(14, 172)
+    pdf.set_font("Arial", style="B", size=10)
+    pdf.cell(0, 10, f"{receipt_data['words']}", ln=True)
+
+    # Tax & GST breakdown
+    pdf.set_xy(60, 190)
+    pdf.set_font("Arial", size=10)
+    pdf.cell(0, 10, f"{receipt_data['base']}", ln=True)
+    pdf.set_xy(90, 190)
+    pdf.cell(0, 10, f"9", ln=True)
+    pdf.set_xy(105, 190)
+    pdf.cell(0, 10, f"{receipt_data['gst']/2}", ln=True)
+    pdf.set_xy(125, 190)
+    pdf.cell(0, 10, f"9", ln=True)
+    pdf.set_xy(140, 190)
+    pdf.cell(0, 10, f"{receipt_data['gst']/2}", ln=True)
+    pdf.set_xy(175, 190)
+    pdf.cell(0, 10, f"{receipt_data['gst']}", ln=True)
+
+    pdf.set_xy(60, 200)
+    pdf.cell(0, 10, f"{receipt_data['base']}", ln=True)
+    pdf.set_xy(105, 200)
+    pdf.cell(0, 10, f"{receipt_data['gst']/2}", ln=True)
+    pdf.set_xy(140, 200)
+    pdf.cell(0, 10, f"{receipt_data['gst']/2}", ln=True)
+    pdf.set_xy(175, 200)
+    pdf.cell(0, 10, f"{receipt_data['gst']}", ln=True)
+
+    pdf.set_xy(14, 213)
+    pdf.cell(0, 10, f"{receipt_data['tcswords']}", ln=True)
+
+    pdf.set_xy(136, 120)
+    pdf.cell(0, 10, f"18", ln=True)
+    pdf.set_xy(30, 120)
+    pdf.cell(0, 10, f"{receipt_data['serviceName']}", ln=True)
+    pdf.set_xy(170, 120)
+    pdf.cell(0, 10, f"{receipt_data['baseAmount']}", ln=True)
+    pdf.set_xy(170, 136)
+    pdf.cell(0, 10, f"{receipt_data['gst']/2}", ln=True)
+    pdf.set_xy(170, 128)
+    pdf.cell(0, 10, f"{receipt_data['gst']/2}", ln=True)
+    pdf.set_xy(70, 136)
+    pdf.cell(0, 10, f"Output CGST@9%", ln=True)
+    pdf.set_xy(70, 128)
+    pdf.cell(0, 10, f"Output SGST@9%", ln=True)
+    pdf.set_xy(148, 128)
+    pdf.cell(0, 10, f"9%", ln=True)
+    pdf.set_xy(148, 136)
+    pdf.cell(0, 10, f"9%", ln=True)
+    # Conditional formatting based on subCatType
+
+
+
+    # Save PDF
+    # Generate PDF in memory
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    pdf_filename = f"invoice_{receipt_data['invoice_no']}.pdf"
+    pdf_path = f"/tmp/{pdf_filename}"  # Temporary storage for uploading
+    pdf.output(pdf_path)
+
+    # Upload PDF to external server
+    with open(pdf_path, "rb") as pdf_file:
+        files = {"file": (pdf_filename, pdf_file, "application/pdf")}
+        response = requests.post("https://api2.patrakarbhavan.com/upload", files=files)
+
+    invoice_link = ""
+    
+    # Check if the upload was successful
+    if response.status_code == 200:
+        invoice_link = response.json().get("file_url")  # Assuming the API returns the file URL
+    else:
+        print("Error uploading file")
+
+    # invoice_link = f"https://files.patrakarbhavan.com/receipts/{current_date}/invoice_{receipt_data['invoice_no']}.pdf"
+    pdf_file_path = invoice_link.replace("https://files.patrakarbhavan.com","/home/rzeaiuym/files.patrakarbhavan.com")
+    return invoice_link, pdf_path
+
+@app.route("/checkStatusChroma/<order_id>")
+def checkStatusChroma(order_id):
+    try:
+        payments = client.order.payments(order_id)
+        payment_items = payments.get('items', [])
+        if not payment_items:
+            return jsonify({"status": False, "msg": "No payments found for this order."})
+
+        if payment_items[-1].get('status') == 'captured':
+            notes = payment_items[-1]['notes'][0]
+            final_payment = payment_items[-1]
+
+            try:
+                date = notes.get("date", "")
+                start_time = notes.get("start_time", "")
+                end_time = notes.get("end_time", "")
+                name = notes.get('name', " ")[0]
+                insName = notes.get("insName", "")
+                email = notes.get("email", " ")[0]
+                phnNo = notes.get("phnNo", " ")[0]
+                amount = final_payment['amount']
+                contact = final_payment['contact']
+                method = final_payment['method']
+                payment_id = final_payment["id"]
+                serviceId = notes.get("serviceId", " ")[0]
+                serviceName = notes.get("serviceName", " ")[0]
+                subCatType = notes.get("subCatType", " ")
+                duration = notes.get("duration", "")
+                govId = notes.get("govId", " ")
+                gstNo = notes.get("gstNo", " ")
+                subject = notes.get("subject", " ")
+                gst = notes.get("gst", "")
+                platformFee = notes.get("platformFee", "")
+                baseAmount = notes.get("baseAmount", "")
+                address = notes.get("address", [" "]),
+                address = list(address)[0]
+                pinCode = notes.get("pinCode", "")
+
+                # data_bk1 = bookings_conf_collection.find_one({"invoice_no":int(invoice_no-1), "_id":-1})
+                data_bk2 = bookings_chroma_collection.find_one(
+                    {"payment_id": payment_id})
+
+                if data_bk2:
+                    return jsonify({
+                        "status": True,
+                        "msg": "Already Payment successful! Slot booked successfully, and Invoice generated.",
+                    })
+
+                invoice_no = get_next_invoice_number()
+                invoice_no = str("OR-"+str(invoice_no))
+
+                invoice_link, invoice_path = generate_invoice_chroma({
+                    "date": date,
+                    "start_time": start_time,
+                    "end_time": end_time,
+                    "duration": duration,
+                    "status": "booked",
+                    "name": name,
+                    "email": email,
+                    "contact": contact,
+                    "serviceId": serviceId,
+                    "serviceName": serviceName,
+                    "phnNo": phnNo,
+                    "amount": amount,
+                    "method": method,
+                    "payment_id": payment_id,
+                    "order_id": order_id,
+                    "insName": insName,
+                    "subCatType": subCatType,
+                    "gstNo": gstNo,
+                    "govId": govId,
+                    "subject": subject,
+                    "gst": gst,
+                    "platformFee": platformFee,
+                    "baseAmount": baseAmount,
+                    "invoice_no": invoice_no,
+                    "address": address,
+                    "pinCode": pinCode
+                })
+
+                ist = pytz.timezone("Asia/Kolkata")
+                now_ist = datetime.now(ist)
+
+                # Format: dd-mm-yyyy, hh:mm AM/PM
+                formatted_time = now_ist.strftime("%d-%m-%Y, %I:%M %p")
+
+                bookings_chroma_collection.insert_one({
+                    "date": date,
+                    "start_time": start_time,
+                    "end_time": end_time,
+                    "duration": duration,
+                    "status": "booked",
+                    "name": name,
+                    "email": email,
+                    "contact": contact,
+                    "serviceId": serviceId,
+                    "serviceName": serviceName,
+                    "phnNo": phnNo,
+                    "amount": amount,
+                    "method": method,
+                    "payment_id": payment_id,
+                    "order_id": order_id,
+                    "insName": insName,
+                    "subCatType": subCatType,
+                    "bookedBy": "Online",
+                    "gstNo": gstNo,
+                    "govId": govId,
+                    "subject": subject,
+                    "gst": gst,
+                    "platformFee": platformFee,
+                    "baseAmount": baseAmount,
+                    "invoice_no": invoice_no,
+                    "invoice_link": invoice_link,
+                    "address": address,
+                    "pinCode": pinCode,
+                    "timestamp": formatted_time
+                })
+
+                send_email_with_invoice(email, invoice_path, {
+                    "date": date,
+                    "start_time": start_time,
+                    "end_time": end_time,
+                    "duration": duration,
+                    "status": "booked",
+                    "name": name,
+                    "email": email,
+                    "contact": contact,
+                    "serviceId": serviceId,
+                    "serviceName": serviceName,
+                    "phnNo": phnNo,
+                    "amount": amount,
+                    "method": method,
+                    "payment_id": payment_id,
+                    "order_id": order_id,
+                    "insName": insName,
+                    "subCatType": subCatType,
+                    "gstNo": gstNo,
+                    "govId": govId,
+                    "subject": subject,
+                    "gst": gst,
+                    "platformFee": platformFee,
+                    "baseAmount": baseAmount,
+                    "invoice_no": invoice_no,
+                    "address": address,
+                    "pinCode": pinCode
+                })
+
+                return jsonify({
+                    "status": True,
+                    "msg": "Payment successful! Slot booked successfully, and Invoice generated.",
+                    "invoice_no": invoice_no,
+                    "invoice_link": invoice_link
+                })
+
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+
+        else:
+            return jsonify({"status": False, "msg": "Payment failed or not captured."})
+
+    except Exception as e:
+        return jsonify({"status": False, "msg": f"Something went wrong: {str(e)} {payments}", "payment_items":payment_items})
+
+
+
+#-----------------------------------------------------------------------------------------
 
 
 if __name__ == '__main__':
