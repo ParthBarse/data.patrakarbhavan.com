@@ -1,0 +1,11 @@
+Flask
+flask-bcrypt
+flask-login
+flask-cors
+pymongo
+PyJWT
+fpdf
+pytz
+num2words
+setuptools
+razorpay

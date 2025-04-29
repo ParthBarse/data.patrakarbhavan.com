@@ -242,6 +242,166 @@ def send_email_with_invoice(to_email, invoice_path, booking_data):
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, to_email, msg.as_string())
 
+
+def send_email_without_invoice(to_email, booking_data):
+    """Sends an HTML email with the invoice attached"""
+    sender_email = "no-reply@patrakarbhavan.com"
+    sender_password = "no-reply@patrakarbhavan"
+    subject = "Booking Confirmation - Patrakar Bhavan"
+    html_template = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation - Patrakar Bhavan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #f9f9f9;
+        }
+        .logo {
+            max-width: 100%;
+            height: auto;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .booking-details {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            margin-bottom: 10px;
+        }
+        .detail-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #1a73e8;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 15px;
+            text-color: white;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #777;
+        }
+        .important-note {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://files.patrakarbhavan.com/email-banner.jpg" alt="Patrakar Bhavan" class="logo">
+            <h2>Booking Confirmation</h2>
+        </div>
+        
+        <div class="content">
+            <p>Dear <strong>{{name}}</strong>,</p>
+            
+            <p>Your booking for B. V. Rao Press Conference Hall has been confirmed. Thank you for choosing Patrakar Bhavan for your event.</p>
+            
+            <div class="booking-details">
+                <div class="detail-row">
+                    <span class="detail-label">Event Date:</span> {{date}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Time Slot:</span> {{start_time}} - {{end_time}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Event Type:</span> {{subCatType}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Duration:</span> {{duration}} minutes
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Amount:</span> ₹{{amount_rupees}}
+                </div>
+            </div>
+            
+            <div class="important-note">
+                <p><strong>Important information:</strong></p>
+                <ul>
+                    <li>Please arrive at least 30 minutes before your scheduled start time.</li>
+                    <li>Kindly bring the attached invoice and a valid government ID matching the booking details.</li>
+                    <li>Any changes to your booking must be made at least 24 hours in advance.</li>
+                </ul>
+            </div>
+            
+            <p>We've attached your invoice to this email for your records. If you need to view any details regarding your booking, please click the button below or contact our help desk.</p>
+        </div>
+        
+        <div class="footer">
+            <p>Patrakar Bhavan | Pune Union of Working Journalist</p>
+            <p>Pune Patrakar Pratishthan, Near Ganjave Chauk, Navi Peth, Pune- 411 030</p>
+            <p>Phone: +91 98 34 881 247 | Email: puwj2013@gmail.com</p>
+            <p>&copy; 2025 Patrakar Bhavan. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+"""  # Insert the HTML template here
+
+    # Replace placeholders with actual booking data
+    html_content = html_template.replace("{{name}}", booking_data["name"])
+    html_content = html_content.replace("{{date}}", booking_data["date"])
+    html_content = html_content.replace(
+        "{{start_time}}", booking_data["start_time"])
+    html_content = html_content.replace(
+        "{{end_time}}", booking_data["end_time"])
+    html_content = html_content.replace(
+        "{{subCatType}}", booking_data["subCatType"])
+    html_content = html_content.replace(
+        "{{duration}}", booking_data["duration"])
+    html_content = html_content.replace(
+        "{{amount_rupees}}", str(int(booking_data["amount"])/100))
+
+    msg = MIMEMultipart()
+    msg["From"] = sender_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    # Attach HTML content
+    msg.attach(MIMEText(html_content, "html"))
+
+    # Send the email
+    with smtplib.SMTP("mail.patrakarbhavan.com", 587) as server:
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, to_email, msg.as_string())
+
 # ------------------------------------------------------------------------------------------------------------
 
 # ^
@@ -859,6 +1019,7 @@ def generate_available_slots_conf(date, duration, event_type):
                 "end": slot_end.strftime("%H:%M")
             })
 
+        # Always move to next TIME_INTERVAL, even if slot overlaps
         current_time += timedelta(minutes=TIME_INTERVAL)
 
     return available_slots
@@ -977,6 +1138,10 @@ def book_slot_conf():
 
         # Store booking
         bookings_conf_collection.insert_one(data)
+
+        send_email_without_invoice(to_email=data["email"], booking_data=data)
+        send_email_without_invoice(to_email="puwj2013@gmail.com", booking_data=data)
+        
         msg = f"Booked Slot {data['start_time']} - {data['end_time']} on {data['date']} by {data['a_name']}"
         create_logs(msg)
 
@@ -1472,6 +1637,36 @@ def checkStatus(order_id):
                     "address": address,
                     "pinCode": pinCode
                 })
+
+                send_email_with_invoice("puwj2013@gmail.com", invoice_path, {
+                    "date": date,
+                    "start_time": start_time,
+                    "end_time": end_time,
+                    "duration": duration,
+                    "status": "booked",
+                    "name": name,
+                    "email": "puwj2013@gmail.com",
+                    "contact": contact,
+                    "serviceId": serviceId,
+                    "serviceName": serviceName,
+                    "phnNo": phnNo,
+                    "amount": amount,
+                    "method": method,
+                    "payment_id": payment_id,
+                    "order_id": order_id,
+                    "insName": insName,
+                    "subCatType": subCatType,
+                    "gstNo": gstNo,
+                    "govId": govId,
+                    "subject": subject,
+                    "gst": gst,
+                    "platformFee": platformFee,
+                    "baseAmount": baseAmount,
+                    "invoice_no": invoice_no,
+                    "address": address,
+                    "pinCode": pinCode
+                })
+
 
                 return jsonify({
                     "status": True,
@@ -2075,6 +2270,69 @@ def checkStatusChroma(order_id):
 
     except Exception as e:
         return jsonify({"status": False, "msg": f"Something went wrong: {str(e)} {payments}", "payment_items":payment_items})
+
+
+db3 = client_monogo["Announcement"]
+announcement_collection = db3["announcement_db"]
+
+@app.route('/addAnnouncements', methods=['POST'])
+def add_announcement():
+    """Handles announcement submission, uploads file to external service if provided, and stores metadata."""
+    title = request.form.get("title")
+    link = request.form.get("link")
+    file = request.files.get("file")
+
+    if not title:
+        return jsonify({"error": "Title is required"}), 400
+
+    file_url = None
+
+    # Upload file to external API if file is provided
+    if file and file.filename:
+        try:
+            upload_response = requests.post(
+                "https://api2.patrakarbhavan.com/uploadDoc",
+                files={"file": (file.filename, file.stream, file.mimetype)}
+            )
+
+            if upload_response.status_code != 200:
+                return jsonify({"error": "File upload failed", "details": upload_response.text}), 500
+
+            file_url = upload_response.json().get("file_url")
+
+        except Exception as e:
+            return jsonify({"error": "Upload failed", "exception": str(e)}), 500
+
+    announcement = {
+        "title": title,
+        "link": link,
+        "file_url": file_url,
+        "aid": uuid.uuid4().hex
+    }
+
+    announcement_collection.insert_one(announcement)
+
+    return jsonify({
+        "message": "Announcement added successfully",
+        "file_url":file_url
+    }), 200
+
+@app.route('/getAnnouncements', methods=['GET'])
+def get_announcements():
+    announcements = list(announcement_collection.find({}, {"_id": 0}))
+    return jsonify(announcements), 200
+
+@app.route('/deleteAnnouncement/<aid>', methods=["DELETE"])
+def delete_announcement(aid):
+    try:
+        result = announcement_collection.delete_one({"aid": aid})
+        if result.deleted_count == 1:
+            return jsonify({"success": True, "message": "Announcement deleted successfully."}), 200
+        else:
+            return jsonify({"success": False, "error": "Announcement not found."}), 404
+    except Exception as e:
+        print(f"Error deleting announcement with aid={aid}: {e}")
+        return jsonify({"success": False, "error": "Server error occurred."}), 500
 
 
 
