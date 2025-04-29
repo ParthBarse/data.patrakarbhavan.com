@@ -956,6 +956,74 @@ def get_booked_slots_conf(date):
 # ^
 
 
+# def generate_available_slots_conf(date, duration, event_type):
+#     """Generate available slots based on date, duration, and type."""
+#     if event_type == "Press Conference":
+#         event_type = "press-conf"
+#     elif event_type == "Program":
+#         event_type = "program"
+#     if event_type not in HALL_HOURS:
+#         raise ValueError("Invalid event type")
+
+#     # Set IST timezone
+#     ist = pytz.timezone("Asia/Kolkata")
+#     now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
+#     now = now_utc.astimezone(ist)
+
+#     # Parse the slot date as a date object
+#     slot_date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+
+#     # Booked slots → datetime objects (IST-aware)
+#     booked_slots_raw = get_booked_slots_conf(date)
+#     booked_slots = [
+#         (
+#             ist.localize(datetime.combine(slot_date_obj, datetime.strptime(start, "%H:%M").time())),
+#             ist.localize(datetime.combine(slot_date_obj, datetime.strptime(end, "%H:%M").time()))
+#         )
+#         for start, end in booked_slots_raw
+#     ]
+
+#     available_slots = []
+#     open_hour, close_hour = HALL_HOURS[event_type]
+
+#     start_of_day = ist.localize(datetime.combine(slot_date_obj, datetime.min.time()))
+#     min_start_time = start_of_day + timedelta(hours=open_hour)
+#     max_end_time = start_of_day + timedelta(hours=close_hour)
+
+#     # If selected date is today (in IST)
+#     if slot_date_obj == now.date():
+#         one_hour_later = now + timedelta(hours=1)
+#         remainder = one_hour_later.minute % TIME_INTERVAL
+#         if remainder != 0:
+#             one_hour_later += timedelta(minutes=(TIME_INTERVAL - remainder))
+#         one_hour_later = one_hour_later.replace(second=0, microsecond=0)
+
+#         if one_hour_later > min_start_time:
+#             min_start_time = one_hour_later
+
+#     current_time = min_start_time
+
+#     while current_time + timedelta(minutes=duration) <= max_end_time:
+#         slot_start = current_time
+#         slot_end = current_time + timedelta(minutes=duration)
+
+#         # Check for overlap
+#         overlap = any(
+#             slot_start < booked_end and slot_end > booked_start
+#             for booked_start, booked_end in booked_slots
+#         )
+
+#         if not overlap:
+#             available_slots.append({
+#                 "start": slot_start.strftime("%H:%M"),
+#                 "end": slot_end.strftime("%H:%M")
+#             })
+
+#         # Always move to next TIME_INTERVAL, even if slot overlaps
+#         current_time += timedelta(minutes=TIME_INTERVAL)
+
+#     return available_slots
+
 def generate_available_slots_conf(date, duration, event_type):
     """Generate available slots based on date, duration, and type."""
     if event_type == "Press Conference":
@@ -1003,6 +1071,9 @@ def generate_available_slots_conf(date, duration, event_type):
 
     current_time = min_start_time
 
+    # Use a fixed slot interval of 30 minutes instead of using TIME_INTERVAL
+    slot_interval = 30  # minutes
+    
     while current_time + timedelta(minutes=duration) <= max_end_time:
         slot_start = current_time
         slot_end = current_time + timedelta(minutes=duration)
@@ -1019,10 +1090,11 @@ def generate_available_slots_conf(date, duration, event_type):
                 "end": slot_end.strftime("%H:%M")
             })
 
-        # Always move to next TIME_INTERVAL, even if slot overlaps
-        current_time += timedelta(minutes=TIME_INTERVAL)
+        # Increment by slot_interval (30 min) instead of TIME_INTERVAL
+        current_time += timedelta(minutes=slot_interval)
 
     return available_slots
+
 
 @app.route("/available_slots_conf", methods=["GET"])
 def available_slots_conf():
