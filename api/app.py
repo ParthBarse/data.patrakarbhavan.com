@@ -1572,7 +1572,7 @@ def get_next_invoice_number():
 @app.route("/checkStatus/<order_id>")
 def checkStatus(order_id):
     try:
-        gen_invoice = False
+        gen_invoice = (False, None)
         ins_db = False
 
         payments = client.order.payments(order_id)
@@ -1653,7 +1653,7 @@ def checkStatus(order_id):
                     "address": address,
                     "pinCode": pinCode
                 })
-                gen_invoice = True
+                gen_invoice = (True, invoice_no)
 
                 ist = pytz.timezone("Asia/Kolkata")
                 now_ist = datetime.now(ist)
