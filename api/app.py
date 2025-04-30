@@ -1751,7 +1751,7 @@ def checkStatus(order_id):
                 })
 
             except Exception as e:
-                return jsonify({"error": str(e)}), 500
+                return jsonify({"error": str(e), "payment_items": payment_items, "safe_dict": safe_dict}), 500
 
         else:
             return jsonify({"status": False, "msg": "Payment failed or not captured."})
