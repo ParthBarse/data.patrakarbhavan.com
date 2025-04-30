@@ -1551,7 +1551,8 @@ class PDF(FPDF):
     def header(self):
         """ Set background image """
         self.image("template2.jpeg", x=0, y=0, w=210, h=297)  # A4 size
-        self.set_font("Arial", size=12)
+        self.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
+        self.set_font("DejaVu", size=12)
 
 
 def get_next_invoice_number():
@@ -1778,7 +1779,7 @@ def generate_invoice(receipt_data):
     """ Generates and saves an invoice as a PDF and returns the invoice link & file path """
     pdf = PDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=10)
+    pdf.set_font("DejaVu", size=10)
 
     # Convert values
     receipt_data["words"] = num2words(
