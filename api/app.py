@@ -1805,7 +1805,7 @@ def generate_invoice(receipt_data):
 
     # Customer details
     pdf.set_xy(14, 60)
-    pdf.set_font("DejaVu", style="B", size=10)
+    pdf.set_font("DejaVu", size=10)
     pdf.cell(0, 10, f"Name: {receipt_data['name']}", ln=True)
 
     pdf.set_xy(101, 93)
@@ -1825,11 +1825,11 @@ def generate_invoice(receipt_data):
 
     # Amount details
     pdf.set_xy(170, 163)
-    pdf.set_font("DejaVu", style="B", size=10)
+    pdf.set_font("DejaVu", size=10)
     pdf.cell(0, 10, f"{receipt_data['amount']/100}", ln=True)
 
     pdf.set_xy(14, 172)
-    pdf.set_font("DejaVu", style="B", size=10)
+    pdf.set_font("DejaVu", size=10)
     pdf.cell(0, 10, f"{receipt_data['words']}", ln=True)
 
     # Tax & GST breakdown
@@ -2108,7 +2108,7 @@ def generate_invoice_chroma(receipt_data):
 
     # Customer details
     pdf.set_xy(14, 60)
-    pdf.set_font("DejaVu", style="B", size=10)
+    pdf.set_font("DejaVu", size=10)
     pdf.cell(0, 10, f"Name: {receipt_data['name']}", ln=True)
 
     pdf.set_xy(101, 93)
@@ -2128,11 +2128,11 @@ def generate_invoice_chroma(receipt_data):
 
     # Amount details
     pdf.set_xy(170, 163)
-    pdf.set_font("DejaVu", style="B", size=10)
+    pdf.set_font("DejaVu", size=10)
     pdf.cell(0, 10, f"{receipt_data['amount']/100}", ln=True)
 
     pdf.set_xy(14, 172)
-    pdf.set_font("DejaVu", style="B", size=10)
+    pdf.set_font("DejaVu", size=10)
     pdf.cell(0, 10, f"{receipt_data['words']}", ln=True)
 
     # Tax & GST breakdown
