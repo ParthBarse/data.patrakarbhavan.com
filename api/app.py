@@ -31,7 +31,8 @@ import base64
 from num2words import num2words
 import os
 from fpdf import FPDF
-# FPDF.FONT_CACHE_DIR = None
+FPDF.FPDF_CACHE_MODE = 1
+FPDF.FONT_CACHE_DIR = "/tmp"
 
 # ----------------------------------------------------------------------------------
 
@@ -87,7 +88,7 @@ def send_email_with_invoice(to_email, invoice_path, booking_data):
     <title>Booking Confirmation - Patrakar Bhavan</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: DejaVuSans, sans-serif;
             line-height: 1.6;
             color: #333;
             margin: 0;
@@ -262,7 +263,7 @@ def send_email_without_invoice(to_email, booking_data):
     <title>Booking Confirmation - Patrakar Bhavan</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: DejaVuSans, sans-serif;
             line-height: 1.6;
             color: #333;
             margin: 0;
@@ -1554,7 +1555,7 @@ class PDF(FPDF):
     def header(self):
         """ Set background image """
         self.image("template2.jpeg", x=0, y=0, w=210, h=297)  # A4 size
-        self.add_font("DejaVuSans", "DejaVuSans", "DejaVuSans.ttf", uni=True)
+        self.add_font("DejaVuSans", "DejaVuSans.tff", "DejaVuSans.ttf", uni=True)
         self.set_font("DejaVuSans", size=12)
 
 
@@ -1782,7 +1783,7 @@ def generate_invoice(receipt_data):
     """ Generates and saves an invoice as a PDF and returns the invoice link & file path """
     pdf = FPDF()  
     pdf.add_page()
-    pdf.add_font("DejaVuSans", "DejaVuSans", "DejaVuSans.ttf", uni=True)
+    pdf.add_font("DejaVuSans", "DejaVuSans.ttf", "DejaVuSans.ttf", uni=True)
     # pdf.set_font("DejaVu", size=12)
     pdf.set_font("DejaVuSans", size=10)
 
@@ -1806,11 +1807,11 @@ def generate_invoice(receipt_data):
 
     # Customer details
     pdf.set_xy(14, 60)
-    pdf.set_font("Arial", style="B", size=10)
+    pdf.set_font("DejaVuSans", style="B", size=10)
     pdf.cell(0, 10, f"Name: {receipt_data['name']}", ln=True)
 
     pdf.set_xy(101, 93)
-    pdf.set_font("Arial", size=10)
+    pdf.set_font("DejaVuSans", size=10)
     pdf.cell(
         0, 10, f"Booking Date: {receipt_data['date']}, Time: {receipt_data['start_time']} - {receipt_data['end_time']}", ln=True)
 
@@ -1826,16 +1827,16 @@ def generate_invoice(receipt_data):
 
     # Amount details
     pdf.set_xy(170, 163)
-    pdf.set_font("Arial", style="B", size=10)
+    pdf.set_font("DejaVuSans", style="B", size=10)
     pdf.cell(0, 10, f"{receipt_data['amount']/100}", ln=True)
 
     pdf.set_xy(14, 172)
-    pdf.set_font("Arial", style="B", size=10)
+    pdf.set_font("DejaVuSans", style="B", size=10)
     pdf.cell(0, 10, f"{receipt_data['words']}", ln=True)
 
     # Tax & GST breakdown
     pdf.set_xy(60, 190)
-    pdf.set_font("Arial", size=10)
+    pdf.set_font("DejaVuSans", size=10)
     pdf.cell(0, 10, f"{receipt_data['base']}", ln=True)
     pdf.set_xy(90, 190)
     pdf.cell(0, 10, f"9", ln=True)
@@ -2087,7 +2088,7 @@ def generate_invoice_chroma(receipt_data):
     """ Generates and saves an invoice as a PDF and returns the invoice link & file path """
     pdf = PDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=10)
+    pdf.set_font("DejaVuSans", size=10)
 
     # Convert values
     receipt_data["words"] = num2words(
@@ -2109,11 +2110,11 @@ def generate_invoice_chroma(receipt_data):
 
     # Customer details
     pdf.set_xy(14, 60)
-    pdf.set_font("Arial", style="B", size=10)
+    pdf.set_font("DejaVuSans", style="B", size=10)
     pdf.cell(0, 10, f"Name: {receipt_data['name']}", ln=True)
 
     pdf.set_xy(101, 93)
-    pdf.set_font("Arial", size=10)
+    pdf.set_font("DejaVuSans", size=10)
     pdf.cell(
         0, 10, f"Time: {receipt_data['start_time']} - {receipt_data['end_time']}", ln=True)
 
@@ -2129,16 +2130,16 @@ def generate_invoice_chroma(receipt_data):
 
     # Amount details
     pdf.set_xy(170, 163)
-    pdf.set_font("Arial", style="B", size=10)
+    pdf.set_font("DejaVuSans", style="B", size=10)
     pdf.cell(0, 10, f"{receipt_data['amount']/100}", ln=True)
 
     pdf.set_xy(14, 172)
-    pdf.set_font("Arial", style="B", size=10)
+    pdf.set_font("DejaVuSans", style="B", size=10)
     pdf.cell(0, 10, f"{receipt_data['words']}", ln=True)
 
     # Tax & GST breakdown
     pdf.set_xy(60, 190)
-    pdf.set_font("Arial", size=10)
+    pdf.set_font("DejaVuSans", size=10)
     pdf.cell(0, 10, f"{receipt_data['base']}", ln=True)
     pdf.set_xy(90, 190)
     pdf.cell(0, 10, f"9", ln=True)
