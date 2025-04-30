@@ -1780,7 +1780,7 @@ def checkStatus(order_id):
 
 def generate_invoice(receipt_data):
     """ Generates and saves an invoice as a PDF and returns the invoice link & file path """
-    pdf = PDF()
+    pdf = FPDF(font_cache_dir="/tmp") 
     pdf.add_page()
     pdf.set_font("DejaVu", size=10)
 
