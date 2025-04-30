@@ -27,8 +27,11 @@ import jwt
 import requests
 import json
 import base64
-from fpdf import FPDF
+# from fpdf import FPDF
 from num2words import num2words
+import os
+from fpdf import FPDF
+FPDF.FONT_CACHE_DIR = "/tmp"
 
 # ----------------------------------------------------------------------------------
 
