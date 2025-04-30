@@ -86,7 +86,7 @@ def send_email_with_invoice(to_email, invoice_path, booking_data):
     <title>Booking Confirmation - Patrakar Bhavan</title>
     <style>
         body {
-            font-family: DejaVu, sans-serif;
+            font-family: notor, sans-serif;
             line-height: 1.6;
             color: #333;
             margin: 0;
@@ -261,7 +261,7 @@ def send_email_without_invoice(to_email, booking_data):
     <title>Booking Confirmation - Patrakar Bhavan</title>
     <style>
         body {
-            font-family: DejaVu, sans-serif;
+            font-family: notor, sans-serif;
             line-height: 1.6;
             color: #333;
             margin: 0;
@@ -1553,8 +1553,8 @@ class PDF(FPDF):
     def header(self):
         """ Set background image """
         self.image("template2.jpeg", x=0, y=0, w=210, h=297)  # A4 size
-        self.add_font("DejaVu", "", "DejaVuSans.ttf")
-        self.set_font("DejaVu", size=12)
+        self.add_font("notor", "", "DejaVuSans.ttf")
+        self.set_font("notor", size=12)
 
 
 def get_next_invoice_number():
@@ -1781,9 +1781,8 @@ def generate_invoice(receipt_data):
     """ Generates and saves an invoice as a PDF and returns the invoice link & file path """
     pdf = PDF()  
     pdf.add_page()
-    pdf.add_font("DejaVu", "", "DejaVuSans.ttf")
-    # pdf.set_font("DejaVu", size=12)
-    pdf.set_font("DejaVu", size=10)
+    pdf.add_font("notor", "", "notor.ttf")
+    pdf.set_font("notor", size=10)
 
     # Convert values
     receipt_data["words"] = num2words(
@@ -1805,11 +1804,12 @@ def generate_invoice(receipt_data):
 
     # Customer details
     pdf.set_xy(14, 60)
-    pdf.set_font("DejaVu", size=10)
+    pdf.add_font("notob", "", "notob.ttf")
+    pdf.set_font("notob", size=10)
     pdf.cell(0, 10, f"Name: {receipt_data['name']}", ln=True)
 
     pdf.set_xy(101, 93)
-    pdf.set_font("DejaVu", size=10)
+    pdf.set_font("notor", size=10)
     pdf.cell(
         0, 10, f"Booking Date: {receipt_data['date']}, Time: {receipt_data['start_time']} - {receipt_data['end_time']}", ln=True)
 
@@ -1825,16 +1825,18 @@ def generate_invoice(receipt_data):
 
     # Amount details
     pdf.set_xy(170, 163)
-    pdf.set_font("DejaVu", size=10)
+    pdf.add_font("notob", "", "notob.ttf")
+    pdf.set_font("notob", size=10)
     pdf.cell(0, 10, f"{receipt_data['amount']/100}", ln=True)
 
     pdf.set_xy(14, 172)
-    pdf.set_font("DejaVu", size=10)
+    pdf.add_font("notob", "", "notob.ttf")
+    pdf.set_font("notob", size=10)
     pdf.cell(0, 10, f"{receipt_data['words']}", ln=True)
 
     # Tax & GST breakdown
     pdf.set_xy(60, 190)
-    pdf.set_font("DejaVu", size=10)
+    pdf.set_font("notor", size=10)
     pdf.cell(0, 10, f"{receipt_data['base']}", ln=True)
     pdf.set_xy(90, 190)
     pdf.cell(0, 10, f"9", ln=True)
@@ -2086,7 +2088,9 @@ def generate_invoice_chroma(receipt_data):
     """ Generates and saves an invoice as a PDF and returns the invoice link & file path """
     pdf = PDF()
     pdf.add_page()
-    pdf.set_font("DejaVu", size=10)
+    
+    pdf.add_font("notor", "", "notor.ttf")
+    pdf.set_font("notor", size=10)
 
     # Convert values
     receipt_data["words"] = num2words(
@@ -2108,11 +2112,12 @@ def generate_invoice_chroma(receipt_data):
 
     # Customer details
     pdf.set_xy(14, 60)
-    pdf.set_font("DejaVu", size=10)
+    pdf.add_font("notob", "", "notob.ttf")
+    pdf.set_font("notob", size=10)
     pdf.cell(0, 10, f"Name: {receipt_data['name']}", ln=True)
 
     pdf.set_xy(101, 93)
-    pdf.set_font("DejaVu", size=10)
+    pdf.set_font("notor", size=10)
     pdf.cell(
         0, 10, f"Time: {receipt_data['start_time']} - {receipt_data['end_time']}", ln=True)
 
@@ -2128,16 +2133,18 @@ def generate_invoice_chroma(receipt_data):
 
     # Amount details
     pdf.set_xy(170, 163)
-    pdf.set_font("DejaVu", size=10)
+    pdf.add_font("notob", "", "notob.ttf")
+    pdf.set_font("notob", size=10)
     pdf.cell(0, 10, f"{receipt_data['amount']/100}", ln=True)
 
     pdf.set_xy(14, 172)
-    pdf.set_font("DejaVu", size=10)
+    pdf.add_font("notob", "", "notob.ttf")
+    pdf.set_font("notob", size=10)
     pdf.cell(0, 10, f"{receipt_data['words']}", ln=True)
 
     # Tax & GST breakdown
     pdf.set_xy(60, 190)
-    pdf.set_font("DejaVu", size=10)
+    pdf.set_font("notor", size=10)
     pdf.cell(0, 10, f"{receipt_data['base']}", ln=True)
     pdf.set_xy(90, 190)
     pdf.cell(0, 10, f"9", ln=True)
