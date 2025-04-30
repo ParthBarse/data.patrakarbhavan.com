@@ -69,6 +69,7 @@ def create_logs(msg):
         "timestamp": current_time
     })
 
+
 def send_email_with_invoice(to_email, invoice_path, booking_data):
     """Sends an HTML email with the invoice attached"""
     sender_email = "no-reply@patrakarbhavan.com"
@@ -404,6 +405,7 @@ def send_email_without_invoice(to_email, booking_data):
         server.sendmail(sender_email, to_email, msg.as_string())
 
 # ------------------------------------------------------------------------------------------------------------
+
 
 # ^
 SECRET_KEY = "your_secret_key"
@@ -1046,8 +1048,10 @@ def generate_available_slots_conf(date, duration, event_type):
     booked_slots_raw = get_booked_slots_conf(date)
     booked_slots = [
         (
-            ist.localize(datetime.combine(slot_date_obj, datetime.strptime(start, "%H:%M").time())),
-            ist.localize(datetime.combine(slot_date_obj, datetime.strptime(end, "%H:%M").time()))
+            ist.localize(datetime.combine(
+                slot_date_obj, datetime.strptime(start, "%H:%M").time())),
+            ist.localize(datetime.combine(
+                slot_date_obj, datetime.strptime(end, "%H:%M").time()))
         )
         for start, end in booked_slots_raw
     ]
@@ -1055,7 +1059,8 @@ def generate_available_slots_conf(date, duration, event_type):
     available_slots = []
     open_hour, close_hour = HALL_HOURS[event_type]
 
-    start_of_day = ist.localize(datetime.combine(slot_date_obj, datetime.min.time()))
+    start_of_day = ist.localize(datetime.combine(
+        slot_date_obj, datetime.min.time()))
     min_start_time = start_of_day + timedelta(hours=open_hour)
     max_end_time = start_of_day + timedelta(hours=close_hour)
 
@@ -1074,7 +1079,7 @@ def generate_available_slots_conf(date, duration, event_type):
 
     # Use a fixed slot interval of 30 minutes instead of using TIME_INTERVAL
     slot_interval = 30  # minutes
-    
+
     while current_time + timedelta(minutes=duration) <= max_end_time:
         slot_start = current_time
         slot_end = current_time + timedelta(minutes=duration)
@@ -1206,15 +1211,16 @@ def book_slot_conf():
 
         # Format: dd-mm-yyyy, hh:mm AM/PM
         formatted_time = now_ist.strftime("%d-%m-%Y, %I:%M %p")
-        
+
         data["timestamp"] = formatted_time
 
         # Store booking
         bookings_conf_collection.insert_one(data)
 
         send_email_without_invoice(to_email=data["email"], booking_data=data)
-        send_email_without_invoice(to_email="puwj2013@gmail.com", booking_data=data)
-        
+        send_email_without_invoice(
+            to_email="puwj2013@gmail.com", booking_data=data)
+
         msg = f"Booked Slot {data['start_time']} - {data['end_time']} on {data['date']} by {data['a_name']}"
         create_logs(msg)
 
@@ -1566,6 +1572,9 @@ def get_next_invoice_number():
 @app.route("/checkStatus/<order_id>")
 def checkStatus(order_id):
     try:
+        gen_invoice = False
+        ins_db = False
+
         payments = client.order.payments(order_id)
         payment_items = payments.get('items', [])
         if not payment_items:
@@ -1644,7 +1653,7 @@ def checkStatus(order_id):
                     "address": address,
                     "pinCode": pinCode
                 })
-
+                gen_invoice = True
 
                 ist = pytz.timezone("Asia/Kolkata")
                 now_ist = datetime.now(ist)
@@ -1681,9 +1690,9 @@ def checkStatus(order_id):
                     "invoice_link": invoice_link,
                     "address": address,
                     "pinCode": pinCode,
-                    "timestamp" : formatted_time
+                    "timestamp": formatted_time
                 })
-
+                ins_db = True
                 send_email_with_invoice(email, invoice_path, {
                     "date": date,
                     "start_time": start_time,
@@ -1742,7 +1751,6 @@ def checkStatus(order_id):
                     "pinCode": pinCode
                 })
 
-
                 return jsonify({
                     "status": True,
                     "msg": "Payment successful! Slot booked successfully, and Invoice generated.",
@@ -1751,7 +1759,13 @@ def checkStatus(order_id):
                 })
 
             except Exception as e:
-                return jsonify({"error": str(e), "payment_items": payment_items, "safe_dict": safe_dict}), 500
+                return jsonify({
+                    "error": str(e), 
+                    "payment_items": payment_items, 
+                    "safe_dict": safe_dict, 
+                    "invoice generated": gen_invoice, 
+                    "insert db": ins_db
+                    }), 500
 
         else:
             return jsonify({"status": False, "msg": "Payment failed or not captured."})
@@ -1966,6 +1980,7 @@ def cancel_pch_booking():
 
 # -------------------------------------------------------------------------------------------
 
+
 # Database reference
 db_chroma = client_monogo["hall_booking_chroma"]
 bookings_chroma_collection = db_chroma["bookings"]
@@ -1980,8 +1995,6 @@ def get_booked_slots_chroma(date):
         {"date": date}, {"_id": 0, "start_time": 1, "end_time": 1})
     return [(entry["start_time"], entry["end_time"]) for entry in bookings]
 
-from datetime import datetime, timedelta
-import pytz
 
 def generate_available_slots_chroma(date, duration):
     """Generate available Chroma Studio slots for a date and duration."""
@@ -1993,8 +2006,10 @@ def generate_available_slots_chroma(date, duration):
     booked_slots_raw = get_booked_slots_chroma(date)
     booked_slots = [
         (
-            ist.localize(datetime.combine(slot_date_obj, datetime.strptime(start, "%H:%M").time())),
-            ist.localize(datetime.combine(slot_date_obj, datetime.strptime(end, "%H:%M").time()))
+            ist.localize(datetime.combine(
+                slot_date_obj, datetime.strptime(start, "%H:%M").time())),
+            ist.localize(datetime.combine(
+                slot_date_obj, datetime.strptime(end, "%H:%M").time()))
         )
         for start, end in booked_slots_raw
     ]
@@ -2002,7 +2017,8 @@ def generate_available_slots_chroma(date, duration):
     available_slots = []
     open_hour, close_hour = CHROMA_HOURS
 
-    start_of_day = ist.localize(datetime.combine(slot_date_obj, datetime.min.time()))
+    start_of_day = ist.localize(datetime.combine(
+        slot_date_obj, datetime.min.time()))
     min_start_time = start_of_day + timedelta(hours=open_hour)
     max_end_time = start_of_day + timedelta(hours=close_hour)
 
@@ -2060,6 +2076,7 @@ def available_slots_chroma():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 def generate_invoice_chroma(receipt_data):
     """ Generates and saves an invoice as a PDF and returns the invoice link & file path """
     pdf = PDF()
@@ -2067,8 +2084,10 @@ def generate_invoice_chroma(receipt_data):
     pdf.set_font("Arial", size=10)
 
     # Convert values
-    receipt_data["words"] = num2words(receipt_data["amount"]/100, lang='en_IN').capitalize()
-    receipt_data["tcswords"] = num2words(receipt_data["gst"], lang='en_IN').capitalize()
+    receipt_data["words"] = num2words(
+        receipt_data["amount"]/100, lang='en_IN').capitalize()
+    receipt_data["tcswords"] = num2words(
+        receipt_data["gst"], lang='en_IN').capitalize()
     receipt_data['base'] = float(receipt_data['baseAmount'])
 
     # Invoice details
@@ -2082,7 +2101,6 @@ def generate_invoice_chroma(receipt_data):
     pdf.set_xy(141, 27)
     pdf.cell(0, 10, f"{current_date}", ln=True)
 
-
     # Customer details
     pdf.set_xy(14, 60)
     pdf.set_font("Arial", style="B", size=10)
@@ -2090,13 +2108,15 @@ def generate_invoice_chroma(receipt_data):
 
     pdf.set_xy(101, 93)
     pdf.set_font("Arial", size=10)
-    pdf.cell(0, 10, f"Time: {receipt_data['start_time']} - {receipt_data['end_time']}", ln=True)
+    pdf.cell(
+        0, 10, f"Time: {receipt_data['start_time']} - {receipt_data['end_time']}", ln=True)
 
     pdf.set_xy(14, 83)
     pdf.cell(0, 10, f"Phone: {receipt_data['phnNo']}", ln=True)
 
     pdf.set_xy(14, 69)
-    pdf.multi_cell(80,4, f"Address: {receipt_data['address']} Pincode- {receipt_data['pinCode']}")
+    pdf.multi_cell(
+        80, 4, f"Address: {receipt_data['address']} Pincode- {receipt_data['pinCode']}")
 
     pdf.set_xy(14, 90)
     pdf.cell(0, 10, f"Email: {receipt_data['email']}", ln=True)
@@ -2157,8 +2177,6 @@ def generate_invoice_chroma(receipt_data):
     pdf.cell(0, 10, f"9%", ln=True)
     # Conditional formatting based on subCatType
 
-
-
     # Save PDF
     # Generate PDF in memory
     current_date = datetime.now().strftime('%Y-%m-%d')
@@ -2169,19 +2187,23 @@ def generate_invoice_chroma(receipt_data):
     # Upload PDF to external server
     with open(pdf_path, "rb") as pdf_file:
         files = {"file": (pdf_filename, pdf_file, "application/pdf")}
-        response = requests.post("https://api2.patrakarbhavan.com/upload", files=files)
+        response = requests.post(
+            "https://api2.patrakarbhavan.com/upload", files=files)
 
     invoice_link = ""
-    
+
     # Check if the upload was successful
     if response.status_code == 200:
-        invoice_link = response.json().get("file_url")  # Assuming the API returns the file URL
+        # Assuming the API returns the file URL
+        invoice_link = response.json().get("file_url")
     else:
         print("Error uploading file")
 
     # invoice_link = f"https://files.patrakarbhavan.com/receipts/{current_date}/invoice_{receipt_data['invoice_no']}.pdf"
-    pdf_file_path = invoice_link.replace("https://files.patrakarbhavan.com","/home/rzeaiuym/files.patrakarbhavan.com")
+    pdf_file_path = invoice_link.replace(
+        "https://files.patrakarbhavan.com", "/home/rzeaiuym/files.patrakarbhavan.com")
     return invoice_link, pdf_path
+
 
 @app.route("/checkStatusChroma/<order_id>")
 def checkStatusChroma(order_id):
@@ -2344,11 +2366,12 @@ def checkStatusChroma(order_id):
             return jsonify({"status": False, "msg": "Payment failed or not captured."})
 
     except Exception as e:
-        return jsonify({"status": False, "msg": f"Something went wrong: {str(e)} {payments}", "payment_items":payment_items})
+        return jsonify({"status": False, "msg": f"Something went wrong: {str(e)} {payments}", "payment_items": payment_items})
 
 
 db3 = client_monogo["Announcement"]
 announcement_collection = db3["announcement_db"]
+
 
 @app.route('/addAnnouncements', methods=['POST'])
 def add_announcement():
@@ -2389,13 +2412,15 @@ def add_announcement():
 
     return jsonify({
         "message": "Announcement added successfully",
-        "file_url":file_url
+        "file_url": file_url
     }), 200
+
 
 @app.route('/getAnnouncements', methods=['GET'])
 def get_announcements():
     announcements = list(announcement_collection.find({}, {"_id": 0}))
     return jsonify(announcements), 200
+
 
 @app.route('/deleteAnnouncement/<aid>', methods=["DELETE"])
 def delete_announcement(aid):
@@ -2410,9 +2435,7 @@ def delete_announcement(aid):
         return jsonify({"success": False, "error": "Server error occurred."}), 500
 
 
-
-#-----------------------------------------------------------------------------------------
-
+# -----------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8081)
