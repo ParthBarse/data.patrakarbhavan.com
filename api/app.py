@@ -31,7 +31,7 @@ import base64
 from num2words import num2words
 import os
 from fpdf import FPDF
-FPDF.FONT_CACHE_DIR = "/tmp"
+FPDF.FONT_CACHE_DIR = None
 
 # ----------------------------------------------------------------------------------
 
@@ -1780,7 +1780,7 @@ def checkStatus(order_id):
 
 def generate_invoice(receipt_data):
     """ Generates and saves an invoice as a PDF and returns the invoice link & file path """
-    pdf = FPDF(font_cache_dir="/tmp")  
+    pdf = FPDF()  
     pdf.add_page()
     pdf.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
     # pdf.set_font("DejaVu", size=12)
