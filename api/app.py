@@ -1624,7 +1624,7 @@ def checkStatus(order_id):
 
                 invoice_no = get_next_invoice_number()
                 invoice_no = str("OR-"+str(invoice_no))
-
+                gen_invoice = (False, invoice_no)
                 invoice_link, invoice_path = generate_invoice({
                     "date": date,
                     "start_time": start_time,
