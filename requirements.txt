@@ -4,7 +4,7 @@ flask-login
 flask-cors
 pymongo
 PyJWT
-fpdf
+fpdf2
 pytz
 num2words
 razorpay
