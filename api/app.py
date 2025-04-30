@@ -25,6 +25,7 @@ import subprocess
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import requests
+import json
 import base64
 from fpdf import FPDF
 from num2words import num2words
@@ -1572,33 +1573,35 @@ def checkStatus(order_id):
 
         if payment_items[-1].get('status') == 'captured':
             notes = payment_items[-1]['notes'][0]
+            json_str = json.dumps(notes, ensure_ascii=False)
+            safe_dict = json.loads(json_str)
             final_payment = payment_items[-1]
 
             try:
-                date = notes.get("date", "")
-                start_time = notes.get("start_time", "")
-                end_time = notes.get("end_time", "")
-                name = notes.get('name', " ")[0]
-                insName = notes.get("insName", "")
-                email = notes.get("email", " ")[0]
-                phnNo = notes.get("phnNo", " ")[0]
+                date = safe_dict.get("date", "")
+                start_time = safe_dict.get("start_time", "")
+                end_time = safe_dict.get("end_time", "")
+                name = safe_dict.get('name', " ")[0]
+                insName = safe_dict.get("insName", "")
+                email = safe_dict.get("email", " ")[0]
+                phnNo = safe_dict.get("phnNo", " ")[0]
                 amount = final_payment['amount']
                 contact = final_payment['contact']
                 method = final_payment['method']
                 payment_id = final_payment["id"]
-                serviceId = notes.get("serviceId", " ")[0]
-                serviceName = notes.get("serviceName", " ")[0]
-                subCatType = notes.get("subCatType", " ")
-                duration = notes.get("duration", "")
-                govId = notes.get("govId", " ")
-                gstNo = notes.get("gstNo", " ")
-                subject = notes.get("subject", " ")
-                gst = notes.get("gst", "")
-                platformFee = notes.get("platformFee", "")
-                baseAmount = notes.get("baseAmount", "")
-                address = notes.get("address", [" "]),
+                serviceId = safe_dict.get("serviceId", " ")[0]
+                serviceName = safe_dict.get("serviceName", " ")[0]
+                subCatType = safe_dict.get("subCatType", " ")
+                duration = safe_dict.get("duration", "")
+                govId = safe_dict.get("govId", " ")
+                gstNo = safe_dict.get("gstNo", " ")
+                subject = safe_dict.get("subject", " ")
+                gst = safe_dict.get("gst", "")
+                platformFee = safe_dict.get("platformFee", "")
+                baseAmount = safe_dict.get("baseAmount", "")
+                address = safe_dict.get("address", [" "]),
                 address = list(address)[0]
-                pinCode = notes.get("pinCode", "")
+                pinCode = safe_dict.get("pinCode", "")
 
                 # data_bk1 = bookings_conf_collection.find_one({"invoice_no":int(invoice_no-1), "_id":-1})
                 data_bk2 = bookings_conf_collection.find_one(
