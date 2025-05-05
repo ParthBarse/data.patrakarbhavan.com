@@ -1139,7 +1139,7 @@ def available_slots_conf():
 
 
 USER_HALL_HOURS = {
-    "press-conf": ("1130", "1530"),
+    "press-conf": ("1130", "1430"),
     "program": ("1000", "2100"),
 }
 USER_TIME_INTERVAL = 30
