@@ -1292,6 +1292,7 @@ def book_slot_conf():
         email = data.get("email")
         phn_no = data.get("phnNo")
         amount = data.get("amount")
+        bookedBy = data.get("a_name")
 
         # Validate required fields
         if not all([date, start_time, end_time, event_type, name, email, phn_no, amount]):
@@ -1340,7 +1341,7 @@ def book_slot_conf():
         # Additional booking details
         data["status"] = "booked"
         data["payment_id"] = uuid.uuid4().hex
-        data["bookedBy"] = "Admin"
+        data["bookedBy"] = bookedBy
         data["subCatType"] = data["type"]
         data["slot"] = ""
         data["serviceId"] = "press-conference"
